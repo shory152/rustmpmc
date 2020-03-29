@@ -10,6 +10,7 @@ mod testfq;
 mod testmpsc;
 mod testmpscq;
 mod mpmcq;
+mod mpmcq2;
 mod testmpmcq;
 mod testmpmcq2;
 
