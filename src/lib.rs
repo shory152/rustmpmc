@@ -5,14 +5,18 @@
 
 pub mod dump;
 mod mysync;
+mod myqueue;
 mod FastQueue;
 mod testfq;
 mod testmpsc;
 mod testmpscq;
 mod mpmcq;
 mod mpmcq2;
+mod mpmcq3;
+mod usizeq;
 mod testmpmcq;
 mod testmpmcq2;
+mod testusizeq;
 
 use std::sync::{Arc, Mutex, Condvar};
 use FastQueue::FQueue;
@@ -24,6 +28,7 @@ pub enum QueueType {
     MyFastQueue,
     MyMPMC1,
     MyMPMC2,
+    USIZEQ,
     StdMpsc,
     StdMpscQ,
 }
@@ -92,6 +97,8 @@ impl QueueConf {
             queueType = MyMPMC1;
         } else if queueTypeStr.eq(&"MYMPMC2".to_string()) {
             queueType = MyMPMC2;
+        } else if queueTypeStr.eq(&"USIZEQ".to_string()) {
+            queueType = USIZEQ;
         } else if queueTypeStr.eq(&"MPSC".to_string()) {
             queueType = StdMpsc;
         } else if queueTypeStr.eq(&"MPSCQ".to_string()) {
@@ -159,6 +166,8 @@ fn run_q_test<T:'static+NewData+Send+Sync>(config: QueueConf)
         return testmpmcq::run_queue_test::<T>(config.nSender, config.nReceiver, config.duration);
     } else if config.queueType == MyMPMC2 {
         return testmpmcq2::run_queue_test::<T>(config.nSender, config.nReceiver, config.duration);
+    } else if config.queueType == USIZEQ {
+        return testusizeq::run_queue_test::<T>(config.nSender, config.nReceiver, config.duration);
     } else if config.queueType == StdMpsc {
         return testmpsc::run_mpsc_test::<T>(config.nSender, config.nReceiver, config.duration);
     } else if config.queueType == StdMpscQ {
